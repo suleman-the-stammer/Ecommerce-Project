@@ -1,0 +1,1 @@
+// our parent directory name is unique so that's way we set its name to index.js otherwise if this file is outside of directory then we write its name to AuthSlice.js like that. I think you will understand the concept.
