@@ -1,9 +1,11 @@
-const express = require('express')
+import express from 'express'
 const app = express();
+import dotenv from 'dotenv'
+import connectdb from './config/db.js'
 
+dotenv.config()
 
-const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://stammer784:stammer784@e-commerce-site.y5e9d.mongodb.net/').then(()=>console.log("Mongoose Chal gya Bhai")).catch((error)=>console.log(error));
+connectdb();
 const port = process.env.Port || 5000
 
 app.listen(port);
