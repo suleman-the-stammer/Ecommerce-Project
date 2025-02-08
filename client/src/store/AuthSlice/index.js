@@ -4,20 +4,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 
+
 const initialState = {
-    isAuthenticated: true,
+    isAuthenticated: false,
     isLoading: false,
     user: {
         name: "suleman",
         role: "user",
     },
 };
+// Async Thunk Creation
+
 
 const authSlice = createSlice({
     name:'auth',
     initialState,
     reducers:{
     setUser: (state , action) =>{ },
+    },
+    extraReducers:(builder) => {
+    builder.addCase()
     }
 })
 

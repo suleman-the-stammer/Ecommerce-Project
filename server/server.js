@@ -13,4 +13,7 @@ app.use(cors())
 app.use(cookieParser)
 app.use(express.json())
 
+//Routes 
+app.use('/api/auth' , )
+
 app.listen(port);
