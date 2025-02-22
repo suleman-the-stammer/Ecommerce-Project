@@ -2,12 +2,13 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../../models/User.js';
 
+
 export const registerController = async (req, res) => {
   const { userName, email, password } = req.body;
   try {
-    const checkUser = await User.findOne({email});
+    const checkUser = await User.findOne({ email });
     if (checkUser) {
-     return  res.json({
+      return res.json({
         success: false,
         message: "User Already Exists",
       })
@@ -33,37 +34,38 @@ export const registerController = async (req, res) => {
 };
 
 export const loginController = async (req, res) => {
-  const {email, password } = req.body;
+  const { email, password } = req.body;
   try {
-    const checkUser = await User.findOne({email});
+    const checkUser = await User.findOne({ email });
     if (!checkUser) {
-     return  res.json({
+      return res.json({
         success: false,
         message: "User Not Exists",
       })
     }
-    const userMatch = bcrypt.compare(password , checkUser.password);
-    if (!userMatch) {
-      res.json({
-        success:false,
-        message: "Incorrect Password"
+    const userPasswordMatch = await bcrypt.compare(password, checkUser.password);
+    if (!userPasswordMatch) {
+     return res.json({
+        success: false,
+        message: "Incorrect Password Here",
       })
     }
-   const token = jwt.sign({
-    id: checkUser._id , role: checkUser.role, email:checkUser.email
-   }, 'My_Secret_Key' , {expiresIn : '60m'});
-   res.cookie('token' , token , {httpOnly: true , secure:false }).json({
-    success: true,
-    message: 'Logged in Successfully ',
-    user: {
-      email: checkUser.email,
-      id: checkUser._id , 
-      role: checkUser.role
+    const token = jwt.sign({
+      id: checkUser._id, role: checkUser.role, email: checkUser.email
+    }, 'My_Secret_Key', { expiresIn: '60m' });
 
-    }
-   })
-    }
-     catch (error) {
+    res.cookie('token', token, { httpOnly: true, secure: false }).json({
+      success: true,
+      message: 'Logged in Successfully ',
+      user: {
+        email: checkUser.email,
+        id: checkUser._id,
+        role: checkUser.role
+
+      }
+    })
+  }
+  catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
@@ -71,4 +73,32 @@ export const loginController = async (req, res) => {
     });
   }
 };
-
+// Logout Controller
+export const logoutController = async (req, res) =>{
+  res.clearCookie('token').json({
+    success: true,
+    message : "Logout Successfully"
+  })
+}
+// Auth MiddleWare
+export const authMiddleware = async(req, res , next )=>{
+  const token = req.cookies.token;
+  if(!token){
+    return res.status(401).json({
+      success: false,
+      message : "Unauthorized User"
+    })
+  }
+  try {
+    // First we Decode the token using our secret key
+    const decode = jwt.verify(token , 'My_Secret_Key');
+    req.user = decode;
+    next();
+  } catch (error) {
+    console.log(error)
+    res.status(401).json({
+      success: false,
+      message : "Unauthorized User"
+    })
+  }
+}

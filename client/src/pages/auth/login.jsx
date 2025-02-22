@@ -16,13 +16,14 @@ function LoginLayout() {
   const dispatch = useDispatch();
   const {toast} = useToast()
   const [formData , setFormData] = useState(initialState);
+
   const onSubmit = (e)=>{
    e.preventDefault();
    dispatch(loginUser(formData)).then((data)=>{
     if(data?.payload?.success) {
       toast({
        title: data?.payload?.message,
-      })
+      });
      
      } else{  
       toast({

@@ -15,13 +15,19 @@ import ShoppingAccount from './pages/shopping/account.jsx';
 import ShoppingCheckOut from './pages/shopping/checkout.jsx';
 import ShoppingListing from './pages/shopping/listing.jsx';
 import CheckAuth from './components/ui/common/checkauth.jsx';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { checkAuth } from './store/AuthSlice/index.js';
 
 
 
 
 
 function App() {
- 
+ const dispatch = useDispatch();
+ useEffect(()=>{
+     dispatch(checkAuth)
+      }, [dispatch])
   const router = createBrowserRouter([
     {
       path: "/auth",
