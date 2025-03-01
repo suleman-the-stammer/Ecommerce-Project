@@ -43,8 +43,8 @@ export const loginController = async (req, res) => {
         message: "User Not Exists",
       })
     }
-    const userPasswordMatch = await bcrypt.compare(password, checkUser.password);
-    if (!userPasswordMatch) {
+    const isMatch = await bcrypt.compare(password, checkUser.password);
+    if (!isMatch) {
      return res.json({
         success: false,
         message: "Incorrect Password Here",
@@ -52,9 +52,11 @@ export const loginController = async (req, res) => {
     }
     const token = jwt.sign({
       id: checkUser._id, role: checkUser.role, email: checkUser.email
-    }, 'My_Secret_Key', { expiresIn: '60m' });
+    }, 'My_Secret_Key', { expiresIn: '1h' });
 
-    res.cookie('token', token, { httpOnly: true, secure: false }).json({
+    res.cookie('token', token, {
+       httpOnly: true, secure: false , 
+      sameSite: 'strict' }).json({
       success: true,
       message: 'Logged in Successfully ',
       user: {
