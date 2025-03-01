@@ -25,9 +25,10 @@ import { checkAuth } from './store/AuthSlice/index.js';
 
 function App() {
  const dispatch = useDispatch();
+
  useEffect(()=>{
-     dispatch(checkAuth)
-      }, [dispatch])
+     dispatch(checkAuth())
+      }, [dispatch]);
   const router = createBrowserRouter([
     {
       path: "/auth",
